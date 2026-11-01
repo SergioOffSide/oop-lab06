@@ -7,14 +7,11 @@ package it.unibo.collections.social.impl;
 import it.unibo.collections.social.api.SocialNetworkUser;
 import it.unibo.collections.social.api.User;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * This will be an implementation of
@@ -38,6 +35,7 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      *
      * think of what type of keys and values would best suit the requirements
      */
+    private final Map<U, String> followedUsers = new HashMap<>();
 
     /*
      * [CONSTRUCTORS]
@@ -64,12 +62,15 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      *            application
      */
     public SocialNetworkUserImpl(final String name, final String surname, final String user, final int userAge) {
-        super(null, null, null, 0);
+        super(name, surname, user, userAge);
     }
 
     /*
      * 2) Define a further constructor where the age defaults to -1
      */
+    public SocialNetworkUserImpl(final String name, final String surname, final String user) {
+        super(name, surname, user);
+    }
 
     /*
      * [METHODS]
@@ -78,6 +79,9 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      */
     @Override
     public boolean addFollowedUser(final String circle, final U user) {
+        if (followedUsers.putIfAbsent(user, circle) == null) {
+            return true;
+        }
         return false;
     }
 
@@ -88,11 +92,21 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      */
     @Override
     public Collection<U> getFollowedUsersInGroup(final String groupName) {
-        return null;
+        final var usersInGroup = new LinkedList<U>();
+        for (final var user : followedUsers.entrySet()) {
+            if (user.getValue().equals(groupName)) {
+                usersInGroup.addFirst(user.getKey());
+            }
+        }
+        return usersInGroup;
     }
 
     @Override
     public List<U> getFollowedUsers() {
-        return null;
+        final var users = new LinkedList<U>();
+        for (final var user : followedUsers.entrySet()) {
+            users.addFirst(user.getKey());
+        }
+        return users;
     }
 }
