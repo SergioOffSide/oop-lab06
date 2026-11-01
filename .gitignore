@@ -10,7 +10,7 @@
 # build folder
 **/build/
 
-# .gralde folder
-**/gradle/
+# .gradle folder
+**/.gradle/
 
 
